@@ -4,12 +4,11 @@ metadata:
   annotations:
     kompose.cmd: kompose convert -f docker-compose.yml -o petclinic_chart/templates
     kompose.image-pull-secret: regcred
-    kompose.version: 1.30.0 (9d8dcb518)
+    kompose.version: 1.28.0 (c4137012e)
   creationTimestamp: null
   labels:
     io.kompose.service: discovery-server
   name: discovery-server
-  namespace: default
 spec:
   replicas: 1
   selector:
@@ -21,24 +20,24 @@ spec:
       annotations:
         kompose.cmd: kompose convert -f docker-compose.yml -o petclinic_chart/templates
         kompose.image-pull-secret: regcred
-        kompose.version: 1.30.0 (9d8dcb518)
+        kompose.version: 1.28.0 (c4137012e)
       creationTimestamp: null
       labels:
         io.kompose.network/k8s-default: "true"
         io.kompose.service: discovery-server
     spec:
-      initContainers:
-        - name: init-config-server
-          image: busybox
-          command: ['sh', '-c', 'until nc -z config-server:8888; do echo waiting for config-server; sleep 2; done;']      
       containers:
         - image: '{{ .Values.IMAGE_TAG_DISCOVERY_SERVER }}'
           name: discovery-server
           ports:
             - containerPort: 8761
-              hostPort: 8761
-              protocol: TCP
           resources: {}
+      initContainers:
+        - name: init-config-server
+          image: busybox
+          command: ['sh', '-c', 'until nc -z config-server:8888; do echo waiting for config-server; sleep 2; done;']
+# for admin-server, api-gateway, customers-service, hystrix-dashboard, vets-service and visits service
+
       imagePullSecrets:
         - name: regcred
       restartPolicy: Always
